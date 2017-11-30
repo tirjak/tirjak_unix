@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<project name="TEST PROJECT" default="all" basedir=".">
+<target name="welcome">
+<echo> welcome <echo/>
+</target>
+</project>

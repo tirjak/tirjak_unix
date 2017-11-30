@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+
+<project name="TEST PROJECT" default="all" basedir=".">
+
+	<property file="build.properties"/>
+ 
+      
+	<property name="SOURCE" value="/cmuser1/cm/cm/integ/tirjak"/>
+	<property name="DEST" value="/cmuser1/cm/cm/integ/tirjak/JAVA"/>
+	<mkdir dir="${DEST}"/>
+
+
+	<target name="all" depends="clean, compile, jar, war, copy, info, call"/>
+	
+
+	<target name="compile" depends="clean">
+		<javac srcdir="${SOURCE}" destdir="${DEST}" classpath="." debug="on" deprecation="off" optimize="on"/>
+	</target>
+
+
+	<target name="clean">
+		<delete>
+			<dirset dir="${DEST}" includes="*" />
+			<fileset dir="${DEST}" includes="*" />
+		</delete>
+			<mkdir dir="${DEST}"/>
+	</target>
+
+
+		<target name="info">
+			<echo>HI my employe id=${EMP_ID} and my team is ${TEAM}
+			</echo>
+		</target>
+
+
+
+	<target name="jar" depends="compile">
+		 <jar destfile="${DEST}/HelloWorld.jar" basedir="${DEST}"/>
+	</target>
+
+
+
+
+	<target name="war" depends="jar">                                                                  
+	      <war                                                                                                   
+	         needxmlfile="false"                                                                                  
+	         basedir="${DEST}"                                                                             
+	         destfile="${DEST}/HelloWorld.war">                                                      
+	         <exclude name="WEB-INF/**"/>                                                            
+	         <exclude name="WEB-INF/src/**"/>                                                                     
+	     </war>                                                                                                
+	</target>
+
+
+
+	<target name="copy">
+		<if>
+			<available file="${SOURCE}/test.txt"/>
+		<then>
+			<echo>File exists copying......</echo>
+			<copy file="${SOURCE}/test.txt" tofile="${DEST}/test.txt" overwrite="true" />
+		</then>
+		<else>
+			<echo>file not exist</echo>
+		</else>
+		</if>
+	</target>
+
+
+	<target name="call">
+		<ant antfile="test.xml" target="all" />
+	</target>
+
+
+</project>
