@@ -1,0 +1,10 @@
+- hosts: all
+  user: root
+
+  tasks:
+
+    - name: Remove the user 'deployer'
+      user:
+       name: oms.deployer.acc
+       state: absent
+       remove: yes

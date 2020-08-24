@@ -1,0 +1,17 @@
+- hosts: all
+  user: root
+
+  tasks:
+
+   - name: Create Deployment User
+     user:
+      name: oms.deployer.acc
+      #python -c 'import crypt; print crypt.crypt("plz put ur passwd here")'
+      password: $6$6RxDl3dmhStX.MCv$g0S7ZafAgDGQViLrj5zMuIQQH97PmK3hb.aBUagh3ajen7IDTYbyGqIV9zrwiGF7lZUBqCS9K6tly33Vty/6V0
+      comment: "This is a deployment user"
+      generate_ssh_key: yes
+      ssh_key_bits: 2048
+      ssh_key_file: .ssh/id_rsa
+      groups: wheel
+      append: yes
+      shell: /bin/bash

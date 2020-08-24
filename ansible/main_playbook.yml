@@ -1,0 +1,6 @@
+
+- include: ./playbook/adduser.yml
+    myvar="Added deployer user"
+
+- include: ./playbook/install.yml
+    myvar="Installed 3rd parties"

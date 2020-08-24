@@ -1,0 +1,6 @@
+- hosts: all
+  tasks:
+  - name: ensure apache is running
+    service:
+      name: httpd
+      state: restarted

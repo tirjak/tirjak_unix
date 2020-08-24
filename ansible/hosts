@@ -1,0 +1,5 @@
+
+ [local]
+#10.130.39.235
+#ip-10-130-39-235.ec2.internal	ansible_user=root
+ip-10-130-39-235.ec2.internal

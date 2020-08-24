@@ -1,0 +1,78 @@
+- hosts: all
+  user: root
+
+  tasks:
+
+  - name: Install httpd
+    yum: pkg=httpd state=installed update_cache=true
+    notify: Start httpd
+
+  - name: Adding proxy load module
+    lineinfile: path=/etc/httpd/conf/httpd.conf insertafter='^# LoadModule foo_module modules/mod_foo.so' line='LoadModule proxy_module modules/mod_proxy.so'
+
+  - name: Adding http proxy load module
+    lineinfile: path=/etc/httpd/conf/httpd.conf insertafter='^LoadModule proxy_module modules/mod_proxy.so' line='LoadModule proxy_http_module modules/mod_proxy_http.so'
+
+  - name: Ensure the default Apache port is 8080
+    lineinfile: path=/etc/httpd/conf/httpd.conf  regexp='^Listen ' insertafter='^#Listen ' line='Listen 8080'
+
+  - name: Creating sungard_vhost.conf file
+    file:
+      path: "/etc/httpd/conf.d/sungard_vhost.conf"
+      state: touch
+      mode: 0777
+      owner: ans
+  - name: Writting inside sungard_vhost.conf file
+    copy:
+      dest: "/etc/httpd/conf.d/sungard_vhost.conf"
+      content: |
+        <VirtualHost *:80>
+            ServerName localhost
+            ProxyPreserveHost On
+            RewriteEngine On
+            ProxyPass /oneportal/op http://localhost:4001/op
+            ProxypassReverse /oneportal/op http://localhost:4001/op
+            ProxyPass /oneportal/api http://localhost:4001/api
+            ProxypassReverse /oneportal/api http://localhost:4001/api
+        </VirtualHost>
+
+  - name: Creating mod_deflate.conf file
+    file:
+      path: "/etc/httpd/conf.d/mod_deflate.conf"
+      state: touch
+      mode: 0777
+      owner: ans
+
+  - name: Writting in mod_deflate.conf file
+    copy:
+      dest: "/etc/httpd/conf.d/mod_deflate.conf"
+      content: |
+        <filesMatch "\.(js|html|css)$">
+            SetOutputFilter DEFLATE
+        </filesMatch>
+
+  - name: Restarting Apache
+    service:
+      name: httpd
+      state: restarted
+
+  - name: Install Nginx
+    yum: pkg=nginx state=installed update_cache=true
+    notify: Start Nginx
+
+  - name: Install wget
+    yum: pkg=wget state=installed update_cache=true
+
+  - name: Installed unzip
+    yum: pkg=unzip state=installed update_cache=true
+
+  - name: Install links
+    yum: pkg=links state=installed update_cache=true
+
+   
+  handlers:
+  - name: Start httpd
+    service: name=httpd state=restarted
+
+  - name: Start Nginx
+    service: name=nginx state=restarted
